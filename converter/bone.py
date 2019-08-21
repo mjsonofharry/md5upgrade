@@ -1,5 +1,5 @@
+import mathutils as mu
 import re
-from scipy.spatial.transform import Rotation
 
 class Bone:
     Pattern = re.compile(r'bone \d+ {[\s\S]*?}')
@@ -19,6 +19,8 @@ class Bone:
     def convert(self, boneTable):
         parent = self.parent if self.parent else ""
         parentIdx = boneTable.get(self.parent, -1)
-        m = [float(x) for x in self.bindmat.split(' ')]
-        q_x, q_y, q_z, q_w = Rotation.from_dcm([m[0:3], m[3:6], m[6:9]]).as_quat() * -1
-        return f'\t"{self.name}"\t{parentIdx} ( {self.bindpos} ) ({q_x} {q_y} {q_z})\t\t// {parent}'
+        matflat = [float(x) for x in self.bindmat.split(' ')]
+        mat = [matflat[0:3], matflat[3:6], matflat[6:9]]
+        m = mu.Matrix(mat)
+        q = m.to_quaternion().normalized()
+        return f'\t"{self.name}"\t{parentIdx} ( {self.bindpos} ) ({q.x} {q.y} {q.z})\t\t// {parent}'
