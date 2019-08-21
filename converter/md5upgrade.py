@@ -11,11 +11,13 @@ NumMeshesPattern = re.compile(r'nummeshes (\d+)')
 
 def convert(md5v6):
     md5version = MD5VersionPattern.search(md5v6).group(1)
+    assert md5version == '6'
     commandline = CommandLinePattern.search(md5v6).group(1)
 
     numbones = NumBonesPattern.search(md5v6).group(1)
     bones = [Bone(i,b) for i,b in enumerate(Bone.Pattern.findall(md5v6))]
     boneTable = {b.name: b.idx for b in bones}
+    numJoints = len(bones)
     joints = '\n'.join([b.convert(boneTable) for b in bones])
 
     nummeshes = NumMeshesPattern.search(md5v6).group(1)
@@ -27,7 +29,7 @@ def convert(md5v6):
     return f'''MD5Version 10
 commandline {commandline}
 
-numJoints {len(joints)}
+numJoints {numJoints}
 numMeshes {nummeshes}
 
 joints {lcurl}

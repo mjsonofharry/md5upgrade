@@ -23,4 +23,5 @@ class Bone:
         mat = [matflat[0:3], matflat[3:6], matflat[6:9]]
         m = mu.Matrix(mat)
         q = m.to_quaternion().normalized()
-        return f'\t"{self.name}"\t{parentIdx} ( {self.bindpos} ) ({q.x} {q.y} {q.z})\t\t// {parent}'
+        (p_x, p_y, p_z) = [float(x) for x in self.bindpos.split(' ')]
+        return f'\t"{self.name}"\t{parentIdx} ( {p_x:.10f} {p_y:.10f} {p_z:.10f} ) ({q.x:.10f} {q.y:.10f} {q.z:.10f})\t\t// {parent}'

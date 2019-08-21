@@ -14,6 +14,7 @@ class Vert:
 
 class Tri:
     Pattern = re.compile(r'(tri .+)')
+    ValPattern = re.compile(r'(\d+) (\d+) (\d+) (\d+)')
 
     def __init__(self, tribuf):
         self.values = tribuf
@@ -31,7 +32,9 @@ class Weight:
     
     def convert(self):
         index, joint, bias, position = self.values
-        return f'\tweight {index} {joint} {bias} ( {position} )'
+        (p_x, p_y, p_z) = [float(x) for x in position.split(' ')]
+        b = float(bias)
+        return f'\tweight {index} {joint} {b:.10f} ( {p_x:.10f} {p_y:.10f} {p_z:.10f} )'
 
 
 class Mesh:
