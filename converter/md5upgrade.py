@@ -19,7 +19,7 @@ def convert(md5v6):
     joints = '\n'.join([b.convert(boneTable) for b in bones])
 
     nummeshes = NumMeshesPattern.search(md5v6).group(1)
-    meshes = '\n\n'.join([Mesh(m).convert() for m in Mesh.Pattern.findall(md5v6)])
+    meshes = '\n'.join([Mesh(m).convert() for m in Mesh.Pattern.findall(md5v6)])
 
     lcurl = '{'
     rcurl = '}'

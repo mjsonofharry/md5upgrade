@@ -36,6 +36,7 @@ class Weight:
 
 class Mesh:
     Pattern = re.compile(r'mesh \d+ {[\s\S]*?}')
+    IndexPattern = re.compile(r'mesh (\d) {')
     ShaderPattern = re.compile(r'shader ".+\/(models\/.+)\.\w+"')
     
     NumVertsPattern = re.compile(r'numverts (\d+)')
@@ -43,6 +44,7 @@ class Mesh:
     NumWeightsPattern = re.compile(r'numweights (\d+)')
 
     def __init__(self, meshbuf):
+        self.index = Mesh.IndexPattern.search(meshbuf).group(1)
         self.shader = Mesh.ShaderPattern.search(meshbuf).group(1)
         self.numverts = Mesh.NumVertsPattern.search(meshbuf).group(1)
         self.numtris = Mesh.NumTrisPattern.search(meshbuf).group(1)
@@ -60,7 +62,7 @@ class Mesh:
         rcurl = '}'
 
         return f'''mesh {lcurl}
-\t//meshes: {''}
+\t//meshes: mesh{self.index}
 \tshader "{self.shader}"
 
 \tnumverts {self.numverts}
