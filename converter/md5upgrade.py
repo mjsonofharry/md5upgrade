@@ -28,7 +28,7 @@ def convert(md5v6):
 commandline {commandline}
 
 numJoints {len(joints)}
-numMeshes {len(meshes)}
+numMeshes {nummeshes}
 
 joints {lcurl}
 {joints}
