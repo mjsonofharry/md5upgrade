@@ -1,5 +1,9 @@
-import mathutils as mu
+import numpy as np
 import re
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    import quaternion
 
 class Bone:
     Pattern = re.compile(r'bone \d+ {[\s\S]*?}')
@@ -20,8 +24,8 @@ class Bone:
         parent = self.parent if self.parent else ""
         parentIdx = boneTable.get(self.parent, -1)
         matflat = [float(x) for x in self.bindmat.split(' ')]
-        mat = [matflat[0:3], matflat[3:6], matflat[6:9]]
-        m = mu.Matrix(mat)
-        q = m.to_quaternion().normalized()
-        (p_x, p_y, p_z) = [float(x) for x in self.bindpos.split(' ')]
-        return f'\t"{self.name}"\t{parentIdx} ( {p_x:.10f} {p_y:.10f} {p_z:.10f} ) ({q.x:.10f} {q.y:.10f} {q.z:.10f})\t\t// {parent}'
+        mat = np.array([matflat[0:3], matflat[3:6], matflat[6:9]])
+        quat = quaternion.from_rotation_matrix(mat)
+        (qx, qy, qz, qw) = quaternion.as_float_array(quat)
+        (px, py, pz) = [float(x) for x in self.bindpos.split(' ')]
+        return f'\t"{self.name}"\t{parentIdx} ( {px:.10f} {py:.10f} {pz:.10f} ) ({qx:.10f} {qy:.10f} {qz:.10f})\t\t// {parent}'
