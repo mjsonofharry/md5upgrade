@@ -5,6 +5,8 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import quaternion
 
+from util import simplifyFloat
+
 class Bone:
     Pattern = re.compile(r'bone \d+ {[\s\S]*?}')
     NamePattern = re.compile(r'name "(\w+)"')
@@ -25,7 +27,7 @@ class Bone:
         parentIdx = boneTable.get(self.parent, -1)
         matflat = [float(x) for x in self.bindmat.split(' ')]
         mat = np.array([matflat[0:3], matflat[3:6], matflat[6:9]])
-        quat = quaternion.from_rotation_matrix(mat)
-        (qx, qy, qz, qw) = quaternion.as_float_array(quat)
-        (px, py, pz) = [float(x) for x in self.bindpos.split(' ')]
-        return f'\t"{self.name}"\t{parentIdx} ( {px:.10f} {py:.10f} {pz:.10f} ) ({qx:.10f} {qy:.10f} {qz:.10f})\t\t// {parent}'
+        q = quaternion.from_rotation_matrix(mat)
+        (px, py, pz) = [simplifyFloat(float(x)) for x in self.bindpos.split(' ')]
+        (qx, qy, qz) = [simplifyFloat(round(c, 10)) for c in (q.x, q.y, q.z)]
+        return f'\t"{self.name}"\t{parentIdx} ( {px} {py} {pz} ) ({qx} {qy} {qz})\t\t// {parent}'

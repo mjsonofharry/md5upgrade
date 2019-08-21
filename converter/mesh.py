@@ -1,5 +1,7 @@
 import re
 
+from util import simplifyFloat
+
 class Vert:
     Pattern = re.compile(r'vert .+')
     ValPattern = re.compile(r'(\d+) (-?\d+\.?\d+) (-?\d+\.?\d+) (\d+) (\d+)')
@@ -9,7 +11,7 @@ class Vert:
         
     def convert(self):
         (vertIndex, s, t, startWeight, counterWeight) = [v for v in self.values]
-        return f'\tvert {vertIndex} ( {float(s):.10f} {float(t):.10f} ) {startWeight} {counterWeight}'
+        return f'\tvert {vertIndex} ( {float(s)} {float(t)} ) {startWeight} {counterWeight}'
 
 
 class Tri:
@@ -32,9 +34,7 @@ class Weight:
     def convert(self):
         index, joint, bias, position = self.values
         (p_x, p_y, p_z) = [float(x) for x in position.split(' ')]
-        bias_fl = float(bias)
-        bias_int = int(bias_fl)
-        b = bias_int if float(bias_int) == bias_fl else bias_fl
+        b = simplifyFloat(bias)
         return f'\tweight {index} {joint} {b} ( {p_x:.10f} {p_y:.10f} {p_z:.10f} )'
 
 
