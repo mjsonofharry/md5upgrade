@@ -8,13 +8,12 @@ class Vert:
         self.values = Vert.ValPattern.search(vertbuf).groups()
         
     def convert(self):
-        vertIndex, s, t, startWeight, counterWeight = [v for v in self.values]
-        return f'\tvert {vertIndex} ( {s} {t} ) {startWeight} {counterWeight}'
+        (vertIndex, s, t, startWeight, counterWeight) = [v for v in self.values]
+        return f'\tvert {vertIndex} ( {float(s):.10f} {float(t):.10f} ) {startWeight} {counterWeight}'
 
 
 class Tri:
     Pattern = re.compile(r'(tri .+)')
-    ValPattern = re.compile(r'(\d+) (\d+) (\d+) (\d+)')
 
     def __init__(self, tribuf):
         self.values = tribuf
@@ -33,8 +32,10 @@ class Weight:
     def convert(self):
         index, joint, bias, position = self.values
         (p_x, p_y, p_z) = [float(x) for x in position.split(' ')]
-        b = float(bias)
-        return f'\tweight {index} {joint} {b:.10f} ( {p_x:.10f} {p_y:.10f} {p_z:.10f} )'
+        bias_fl = float(bias)
+        bias_int = int(bias_fl)
+        b = bias_int if float(bias_int) == bias_fl else bias_fl
+        return f'\tweight {index} {joint} {b} ( {p_x:.10f} {p_y:.10f} {p_z:.10f} )'
 
 
 class Mesh:
