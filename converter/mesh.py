@@ -34,7 +34,7 @@ class Weight:
     def convert(self):
         index, joint, bias, position = self.values
         (p_x, p_y, p_z) = [float(x) for x in position.split(' ')]
-        b = simplifyFloat(bias)
+        b = simplifyFloat(float(bias))
         return f'\tweight {index} {joint} {b} ( {p_x:.10f} {p_y:.10f} {p_z:.10f} )'
 
 
@@ -66,7 +66,7 @@ class Mesh:
         rcurl = '}'
 
         return f'''mesh {lcurl}
-\t//meshes: mesh{self.index}
+\t// meshes: {self.shader.split('/')[-1]}
 \tshader "{self.shader}"
 
 \tnumverts {self.numverts}
