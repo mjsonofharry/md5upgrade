@@ -28,7 +28,7 @@ class Bone:
         parentIndex = boneTable.get(self.parent, -1)
         matflat = [float(x) for x in self.bindmat.split(' ')]
         mat = np.array([matflat[0:3], matflat[3:6], matflat[6:9]])
-        q = quaternion.from_rotation_matrix(mat).normalized()
+        q = quaternion.from_rotation_matrix(mat)
         (px, py, pz) = [simplifyFloat(float(x)) for x in self.bindpos.split(' ')]
         (qx, qy, qz) = [simplifyFloat(round(c, 10)) for c in (q.x, q.y, q.z)]
-        return f'\t"{self.name}"\t{parentIndex} ( {px} {py} {pz} ) ({qx} {qy} {qz})\t\t// {parentName}'
+        return f'\t"{self.name}"\t{parentIndex} ( {px} {py} {pz} ) ( {qx} {qy} {qz} )\t\t// {parentName}'
