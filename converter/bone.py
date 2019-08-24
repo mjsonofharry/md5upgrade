@@ -1,11 +1,8 @@
 import numpy as np
 import re
-import warnings
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    import quaternion
+from scipy.spatial.transform import Rotation
 
-from util import simplifyFloat
+from util import formatValue
 
 class Bone:
     Pattern = re.compile(r'bone \d+ {[\s\S]*?}')
@@ -28,7 +25,7 @@ class Bone:
         parentIndex = boneTable.get(self.parent, -1)
         matflat = [float(x) for x in self.bindmat.split(' ')]
         mat = np.array([matflat[0:3], matflat[3:6], matflat[6:9]])
-        q = quaternion.from_rotation_matrix(mat)
-        (px, py, pz) = [simplifyFloat(float(x)) for x in self.bindpos.split(' ')]
-        (qx, qy, qz) = [simplifyFloat(round(c, 10)) for c in (q.x, q.y, q.z)]
+        q = Rotation.from_dcm(mat).as_quat()
+        (px, py, pz) = [formatValue(v) for v in self.bindpos.split(' ')]
+        (qx, qy, qz, qw) = [formatValue(v) for v in q]
         return f'\t"{self.name}"\t{parentIndex} ( {px} {py} {pz} ) ( {qx} {qy} {qz} )\t\t// {parentName}'

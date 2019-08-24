@@ -1,6 +1,6 @@
 import re
 
-from util import simplifyFloat
+from util import formatValue
 
 class Vert:
     Pattern = re.compile(r'vert .+')
@@ -11,7 +11,7 @@ class Vert:
         
     def convert(self):
         (vertIndex, s, t, startWeight, counterWeight) = [v for v in self.values]
-        return f'\tvert {vertIndex} ( {float(s)} {float(t)} ) {startWeight} {counterWeight}'
+        return f'\tvert {vertIndex} ( {formatValue(s)} {formatValue(t)} ) {startWeight} {counterWeight}'
 
 
 class Tri:
@@ -34,8 +34,8 @@ class Weight:
     def convert(self):
         index, joint, bias, position = self.values
         (p_x, p_y, p_z) = [float(x) for x in position.split(' ')]
-        b = simplifyFloat(float(bias))
-        return f'\tweight {index} {joint} {b} ( {p_x:.10f} {p_y:.10f} {p_z:.10f} )'
+        b = formatValue(bias)
+        return f'\tweight {index} {joint} {b} ( {formatValue(p_x)} {formatValue(p_y)} {formatValue(p_z)} )'
 
 
 class Mesh:
