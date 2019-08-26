@@ -40,7 +40,7 @@ class Weight:
 
 class Mesh:
     Pattern = re.compile(r'mesh \d+ {[\s\S]*?}')
-    IndexPattern = re.compile(r'mesh (\d) {')
+    IndexPattern = re.compile(r'mesh (\d+) {')
     ShaderPattern = re.compile(r'shader ".+\/(models\/.+)\.\w+"')
     
     NumVertsPattern = re.compile(r'numverts (\d+)')
