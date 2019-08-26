@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 
@@ -9,7 +10,7 @@ CommandLinePattern = re.compile(r'commandline (".*")')
 NumBonesPattern = re.compile(r'numbones (\d+)')
 NumMeshesPattern = re.compile(r'nummeshes (\d+)')
 
-def convert(md5v6):
+def convert(md5v6: str) -> str:
     md5version = MD5VersionPattern.search(md5v6).group(1)
     assert md5version == '6'
     commandline = CommandLinePattern.search(md5v6).group(1)
@@ -39,13 +40,36 @@ joints {lcurl}
 {meshes}
 '''
 
-def main():
-    fin_path = sys.argv[1]
-    fout_path = sys.argv[2]
-    with open(fin_path, 'r') as fin, open(fout_path, 'w') as fout:
+def convert_io(input_path: str, output_path: str):
+    print(f'Reading {input_path} and writing {output_path}')
+    if not os.path.exists(input_path):
+        print(f'Error: cannot read {input_path} because it does not exist.')
+        sys.exit(1)
+    if not os.path.isfile(input_path):
+        print(f'Error: cannot read {input_path} because it is not a file.')
+        sys.exit(1)
+    if os.path.exists(output_path):
+        answer = input(f'Warning: this will overwrite {output_path}. Continue? [y/n]: ')
+        if answer.lower() != 'y':
+            print('Terminating')
+            sys.exit(0)
+    with open(input_path, 'r') as fin, open(output_path, 'w') as fout:
         md5v6 = fin.read()
         md5v10 = convert(md5v6)
         fout.write(md5v10)
+
+def main():
+    source = sys.argv[1]
+    destination = sys.argv[2]
+    if os.path.isdir(source):
+        for fname in os.listdir(source):
+            input_path = os.path.join(source, fname)
+            output_path = os.path.join(destination, fname)
+            convert_io(input_path, output_path)
+    else:
+        convert_io(source, destination)
+
+
 
 if __name__ == '__main__':
     main()
