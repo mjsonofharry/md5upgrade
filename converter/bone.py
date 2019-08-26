@@ -1,6 +1,6 @@
 import numpy as np
 import re
-from scipy.spatial.transform import Rotation
+from nibabel import quaternions
 
 from util import formatValue
 
@@ -25,7 +25,7 @@ class Bone:
         parentIndex = boneTable.get(self.parent, -1)
         matflat = [float(x) for x in self.bindmat.split(' ')]
         mat = np.array([matflat[0:3], matflat[3:6], matflat[6:9]])
-        q = Rotation.from_dcm(mat).as_quat()
+        q = quaternions.mat2quat(mat)
         (px, py, pz) = [formatValue(v) for v in self.bindpos.split(' ')]
-        (qx, qy, qz, qw) = [formatValue(v) for v in q]
+        (qw, qx, qy, qz) = [formatValue(v) for v in q]
         return f'\t"{self.name}"\t{parentIndex} ( {px} {py} {pz} ) ( {qx} {qy} {qz} )\t\t// {parentName}'
