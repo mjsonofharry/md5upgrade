@@ -41,15 +41,15 @@ joints {lcurl}
 '''
 
 def convert_io(input_path: str, output_path: str):
-    print(f'Reading {input_path} and writing {output_path}')
+    print(f'Reading "{input_path}" and writing "{output_path}"')
     if not os.path.exists(input_path):
-        print(f'Error: cannot read {input_path} because it does not exist.')
+        print(f'Error: cannot read "{input_path}" because it does not exist.')
         sys.exit(1)
     if not os.path.isfile(input_path):
-        print(f'Error: cannot read {input_path} because it is not a file.')
+        print(f'Error: cannot read "{input_path}" because it is not a file.')
         sys.exit(1)
     if os.path.exists(output_path):
-        answer = input(f'Warning: this will overwrite {output_path}. Continue? [y/n]: ')
+        answer = input(f'Warning: this will overwrite "{output_path}". Continue? [y/n]: ')
         if answer.lower() != 'y':
             print('Terminating')
             sys.exit(0)
@@ -62,12 +62,19 @@ def main():
     source = sys.argv[1]
     destination = sys.argv[2]
     if os.path.isdir(source):
+        if not os.path.isdir(destination):
+            print(f'Error: cannot use "{destination} as output for batch conversion because it is not a directory')
         for fname in os.listdir(source):
             input_path = os.path.join(source, fname)
             output_path = os.path.join(destination, fname)
             convert_io(input_path, output_path)
     else:
-        convert_io(source, destination)
+        if os.path.isdir(destination):
+            fname = os.path.basename(source)
+            output_path = os.path.join(destination, fname)
+            convert_io(output_path, fname)
+        else:
+            convert_io(source, destination)
 
 
 
