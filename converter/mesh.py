@@ -1,41 +1,48 @@
 import re
 
-from util import formatValue
+from util import formatValue, Vector
 
 class Vert:
     Pattern = re.compile(r'vert .+')
-    ValPattern = re.compile(r'(\d+) (-?\d+\.?\d+) (-?\d+\.?\d+) (\d+) (\d+)')
 
     def __init__(self, vertbuf):
-        self.values = Vert.ValPattern.search(vertbuf).groups()
+        label, index, s, t, startWeight, counterWeight = vertbuf.split(' ')
+        assert label == 'vert'
+        self.index = int(index)
+        self.textureU = float(s)
+        self.textureV = float(t)
+        self.startWeight = int(startWeight)
+        self.counterWeight = int(counterWeight)
+
         
     def convert(self):
-        (vertIndex, s, t, startWeight, counterWeight) = [v for v in self.values]
-        return f'\tvert {vertIndex} ( {formatValue(s)} {formatValue(t)} ) {startWeight} {counterWeight}'
+        return f'\tvert {self.index} ( {formatValue(self.textureU)} {formatValue(self.textureV)} ) {self.startWeight} {self.counterWeight}'
 
 
 class Tri:
     Pattern = re.compile(r'(tri .+)')
 
     def __init__(self, tribuf):
-        self.values = tribuf
+        self.data = tribuf
+        assert self.data.split(' ')[0] == 'tri'
 
     def convert(self):
-        return f'\t{self.values}'
+        return f'\t{self.data}'
 
 
 class Weight:
     Pattern = re.compile(r'weight .+')
-    ValPattern = re.compile(r'(\d+) (\d+) (-?\d+\.?\d+) ((?:-?\d+\.?\d+\s*){3})')
 
     def __init__(self, weightbuf):
-        self.values = Weight.ValPattern.search(weightbuf).groups()
+        label, index, joint, bias, x, y, z = weightbuf.split(' ')
+        assert label == 'weight'
+        self.index = int(index)
+        self.joint = int(joint)
+        self.bias = float(bias)
+        self.position = Vector(float(x), float(y), float(z))
     
     def convert(self):
-        index, joint, bias, position = self.values
-        (p_x, p_y, p_z) = [float(x) for x in position.split(' ')]
-        b = formatValue(bias)
-        return f'\tweight {index} {joint} {b} ( {formatValue(p_x)} {formatValue(p_y)} {formatValue(p_z)} )'
+        return f'\tweight {self.index} {self.joint} {formatValue(self.bias)} ( {formatValue(self.position.x)} {formatValue(self.position.y)} {formatValue(self.position.z)} )'
 
 
 class Mesh:

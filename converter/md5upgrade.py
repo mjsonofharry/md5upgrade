@@ -16,6 +16,7 @@ def convert(md5v6):
 
     numbones = NumBonesPattern.search(md5v6).group(1)
     bones = sorted([Bone(b) for b in Bone.Pattern.findall(md5v6)], key=lambda x: x.index)
+    for i,b in enumerate(bones): assert b.index == i
     boneTable = {b.name: b.index for b in bones}
     numJoints = len(bones)
     joints = '\n'.join([b.convert(boneTable) for b in bones])
