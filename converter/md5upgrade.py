@@ -66,6 +66,8 @@ def main():
             print(f'Error: cannot use "{destination} as output for batch conversion because it is not a directory')
             sys.exit(1)
         for fname in os.listdir(source):
+            if not fname.endswith('.md5mesh'):
+                continue
             input_path = os.path.join(source, fname)
             output_path = os.path.join(destination, fname)
             convert_io(input_path, output_path)
