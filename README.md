@@ -11,7 +11,11 @@ Only Python 3 is supported. Install the following libraries:
 
 # Usage
 
-`python3 md5upgrade.py <input path> <output path>`
+`python3 md5upgrade.py <path to input md5mesh> <path to output md5mesh>`
+
+`python3 md5upgrade.py <path to input md5mesh> <path to output folder>`
+
+`python3 md5upgrade.py <path to input folder> <path to output folder>`
 
 # Reference
 
