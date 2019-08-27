@@ -6,8 +6,9 @@ Converts md5mesh version 6 to version 10.
 
 Only Python 3 is supported. Install the following libraries:
 
-`pip install numpy`
-`pip install nibabel`
+`pip3 install numpy`
+
+`pip3 install nibabel`
 
 # Usage
 
