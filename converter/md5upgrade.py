@@ -59,8 +59,8 @@ def convert_io(input_path: str, output_path: str):
         fout.write(md5v10)
 
 def main():
-    source = sys.argv[1]
-    destination = sys.argv[2]
+    source = os.path.abspath(sys.argv[1])
+    destination = os.path.abspath(sys.argv[2])
     if os.path.isdir(source):
         if not os.path.isdir(destination):
             print(f'Error: cannot use "{destination} as output for batch conversion because it is not a directory')
@@ -78,7 +78,6 @@ def main():
             convert_io(source, output_path)
         else:
             convert_io(source, destination)
-
 
 
 if __name__ == '__main__':

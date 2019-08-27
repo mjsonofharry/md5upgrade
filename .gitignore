@@ -108,3 +108,5 @@ venv.bak/
 
 # samples
 *.md5mesh
+*.md5anim
+*.tga
