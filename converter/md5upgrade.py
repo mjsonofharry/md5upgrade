@@ -64,6 +64,7 @@ def main():
     if os.path.isdir(source):
         if not os.path.isdir(destination):
             print(f'Error: cannot use "{destination} as output for batch conversion because it is not a directory')
+            sys.exit(1)
         for fname in os.listdir(source):
             input_path = os.path.join(source, fname)
             output_path = os.path.join(destination, fname)
@@ -72,7 +73,7 @@ def main():
         if os.path.isdir(destination):
             fname = os.path.basename(source)
             output_path = os.path.join(destination, fname)
-            convert_io(output_path, fname)
+            convert_io(source, output_path)
         else:
             convert_io(source, destination)
 
