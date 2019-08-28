@@ -4,19 +4,29 @@ import sys
 
 from bone import Bone
 from mesh import Mesh
+from option import Option
 
 MD5VersionPattern = re.compile(r'MD5Version (\d+)')
-CommandLinePattern = re.compile(r'commandline (".*")')
+CommandLinePattern = re.compile(r'commandline "(.*)"')
 NumBonesPattern = re.compile(r'numbones (\d+)')
 NumMeshesPattern = re.compile(r'nummeshes (\d+)')
 
 def convert(md5v6: str) -> str:
-    md5version = MD5VersionPattern.search(md5v6).group(1)
-    assert md5version == '6'
-    commandline = CommandLinePattern.search(md5v6).group(1)
+    md5version = Option(MD5VersionPattern.search(md5v6)).map(lambda x: x.group(1))
+    if not md5version.isDefined():
+        print(f'Cannot not read md5mesh version')
+    if md5version.get != '6':
+        print(f'Cannot convert md5mesh version {md5version}')
 
-    numbones = NumBonesPattern.search(md5v6).group(1)
-    bones = sorted([Bone(b) for b in Bone.Pattern.findall(md5v6)], key=lambda x: x.index)
+    commandline = Option(CommandLinePattern.search(md5v6)).map(lambda x: x.group(1)).getOrElse('')
+
+    numbones = Option(NumBonesPattern.search(md5v6)).map(lambda x: x.group(1))
+    if not numbones.isDefined():
+        print(f'Cannot read numbones')
+    bones = sorted(
+        [Bone(i,b) for i,b in enumerate(Bone.Pattern.findall(md5v6))],
+        key=lambda x: x.index)
+        
     boneTable = {b.name: b.index for b in bones}
     numJoints = len(bones)
     joints = '\n'.join([b.convert(boneTable) for b in bones])
@@ -28,7 +38,7 @@ def convert(md5v6: str) -> str:
     rcurl = '}'
 
     return f'''MD5Version 10
-commandline {commandline}
+commandline "{commandline}"
 
 numJoints {numJoints}
 numMeshes {nummeshes}
